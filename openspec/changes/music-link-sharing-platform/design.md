@@ -156,6 +156,110 @@ Constraints:
 
 **Rationale:** $0/month target for early public launch. No CDN for MVP. Single region is fine until global latency becomes a problem.
 
+## Frontend & UI
+
+### Visual direction
+
+**Choice:** Vercel-inspired — clean, minimal, professional. Light and dark palettes with subtle gray borders, generous whitespace, typography-forward hierarchy. Product name stays casual in copy; UI stays calm.
+
+**Stack:** Tailwind CSS, shadcn/ui, Geist Sans (UI) + Geist Mono (URLs/slugs), Sonner toasts for transient feedback, inline errors on forms.
+
+**Brand (MVP):** Text wordmark "throw.it" in nav — no custom logo.
+
+**Motion:** Minimal — hover/focus transitions only.
+
+**Language:** English only; hardcoded strings (no i18n library).
+
+### Theme
+
+**Choice:** Light, Dark, and System via `next-themes`. Default on first visit: **System** (follows `prefers-color-scheme`). Preference stored in localStorage. Theme toggle in nav (dropdown: Light / Dark / System). All pages including playback support both themes via Tailwind `dark:` variants.
+
+### Site routes (pages)
+
+| Route | Purpose | Auth |
+|-------|---------|------|
+| `/` | Landing — explains both upload modes, CTAs to each path | Public |
+| `/upload` | Persistent upload | Required |
+| `/upload/temp` | Anonymous 10-min upload | Public; redirects to `/upload` if signed in |
+| `/sign-in` | Magic link email entry | Public |
+| `/auth/verify` | Magic link callback → redirects to `/library` | — |
+| `/library` | Track library | Required |
+| `/t/[slug]` | Public playback | Public |
+
+Post-sign-in redirect is always `/library` (no return-URL / `?next=` logic).
+
+### App shell
+
+**Choice:** Top nav on every page (including playback). No footer for MVP.
+
+Nav contents: wordmark (links to `/`), Library (signed-in only), theme toggle, Sign in / Sign out.
+
+Single root `app/layout.tsx` wraps all pages — no route groups for MVP.
+
+### Upload UX
+
+**File selection:** Drag-and-drop zone + "Choose file" button on both upload pages.
+
+**Flow:** Single screen, manual start — pick file → optional title (signed-in only) → click Upload → progress bar → success panel.
+
+**Signed-in (`/upload`):** Optional title field; defaults to filename without extension.
+
+**Anonymous (`/upload/temp`):** No title field; title derived from uploaded filename (without extension).
+
+**Post-upload:** Stay on upload page. Success panel shows share link, copy button, Preview link (opens `/t/[slug]` in same tab), and Upload another to reset the form.
+
+**Upload progress:** Custom hook using XMLHttpRequest against presigned R2 PUT URL.
+
+### Library UX
+
+**Layout:** Simple table — Title, Duration, Date, Actions.
+
+**Share links:** Copy button only (URL hidden); Sonner toast confirms copy.
+
+**Rename:** Dialog with pre-filled title, Save / Cancel.
+
+**Delete:** Confirm dialog before permanent deletion.
+
+**Empty state:** Prompt to upload first track.
+
+### Sign-in UX
+
+After requesting magic link, replace form with inline "Check your email" message on the same `/sign-in` page; option to request another link.
+
+Already-signed-in users visiting `/sign-in` redirect to `/library`.
+
+### Playback page
+
+**Metadata:** Title and duration only — no upload date.
+
+**Anonymous tracks:** Static expiry message at SSR (e.g. "This temporary track expires 10 minutes after upload" or relative text like "Uploaded 3 minutes ago · expires soon"). No live countdown timer.
+
+**404:** Single generic message — "Track not found" — for invalid, deleted, and expired slugs.
+
+**Player:** Custom UI (play/pause, seek scrubber, elapsed/total time). No volume control, no keyboard shortcuts for MVP. Spinner on play button while presigned stream URL loads.
+
+**Mobile scrubber:** Same component; taller touch target via CSS padding.
+
+### Open Graph
+
+**Title:** Track name.
+
+**Description:** Fixed — "Listen on throw.it".
+
+**Image:** Single static branded `og:image` for all tracks (logo + "Audio on throw.it" or similar).
+
+### Frontend architecture
+
+**Server vs client:** Pragmatic split — Server Components by default; `"use client"` only for player, upload flow, forms, dialogs, clipboard actions.
+
+**Data fetching:** Server Components for reads (library list, playback metadata SSR). Client components call `/api/...` for mutations; `router.refresh()` after rename/delete.
+
+**Forms:** React Hook Form + Zod.
+
+**Accessibility (MVP baseline):** Semantic HTML, visible focus states, dialog focus traps (shadcn), `aria-label` on icon-only buttons, sufficient color contrast in both themes.
+
+**Responsive:** Mobile-first; all pages usable on phone.
+
 ## Risks / Trade-offs
 
 - **[Large file upload failures]** → Same-ticket retry on confirm; sweeper for orphaned R2 objects; MVP shows clear error and retry button
@@ -182,7 +286,7 @@ Rollback: revert Vercel deployment; database and R2 objects are independent and 
 
 ## Open Questions
 
-- Custom track artwork/cover image on upload — nice for link previews but adds scope
+- Per-track OG artwork (dynamic preview images) — post-MVP; MVP uses static `og:image`
 - Transcoding pipeline — post-MVP when "won't play on iPhone" becomes common
 - CDN — add when global latency or storage egress costs warrant it
 - Paid tiers with higher storage quotas — post-MVP monetization

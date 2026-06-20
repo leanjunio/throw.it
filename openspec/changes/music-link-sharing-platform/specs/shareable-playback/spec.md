@@ -31,7 +31,7 @@ The system SHALL serve a playback page at each share URL to any visitor without 
 #### Scenario: Invalid share link
 
 - **WHEN** a person navigates to a URL with a slug that does not match any active track
-- **THEN** the system displays a 404 page indicating the track was not found
+- **THEN** the system displays a generic 404 page with the message "Track not found"
 
 ### Requirement: In-browser audio streaming with refresh on demand
 
@@ -59,17 +59,17 @@ The system SHALL stream the audio file to the browser's native audio player on t
 
 ### Requirement: Track metadata on playback page
 
-The system SHALL display the track title and duration on the playback page. The upload date MAY be displayed. Anonymous tracks MUST display remaining time until expiry.
+The system SHALL display the track title and duration on the playback page. The upload date MUST NOT be displayed. Anonymous tracks MUST display a static expiry message (computed at page load; no live countdown timer).
 
 #### Scenario: Metadata displayed
 
 - **WHEN** a listener opens a valid share URL for a track titled "Demo Beat" with a duration of 3:42
 - **THEN** the playback page shows "Demo Beat" and "3:42"
 
-#### Scenario: Anonymous expiry countdown displayed
+#### Scenario: Anonymous expiry message displayed
 
 - **WHEN** a listener opens an anonymous track share URL with 7 minutes remaining
-- **THEN** the playback page shows a visible indicator that the track will expire soon
+- **THEN** the playback page shows a static message indicating the track is temporary and will expire (e.g., "This temporary track expires 10 minutes after upload")
 
 ### Requirement: Deleted and expired tracks are inaccessible
 
@@ -78,21 +78,21 @@ The system SHALL return a 404 response for share URLs of tracks that have been d
 #### Scenario: Deleted track link
 
 - **WHEN** a listener navigates to the share URL of a deleted signed-in track
-- **THEN** the system displays a 404 page indicating the track is no longer available
+- **THEN** the system displays a generic 404 page with the message "Track not found"
 
 #### Scenario: Expired anonymous track link
 
 - **WHEN** a listener navigates to the share URL of an anonymous track past its 10-minute TTL
-- **THEN** the system displays a 404 page indicating the track is no longer available
+- **THEN** the system displays a generic 404 page with the message "Track not found"
 
 ### Requirement: Open Graph metadata for link previews
 
-The system SHALL include Open Graph meta tags on playback pages so that shared links render a rich preview (title, description) in messaging apps and social platforms.
+The system SHALL include Open Graph meta tags on playback pages so that shared links render a rich preview in messaging apps and social platforms. The preview MUST use the track title as `og:title`, the fixed description "Listen on throw.it" as `og:description`, and a static branded throw.it image as `og:image`.
 
 #### Scenario: Link preview in chat app
 
 - **WHEN** a share URL is pasted into a messaging app that reads Open Graph tags
-- **THEN** the preview shows the track title and a description indicating it is an audio track on throw.it
+- **THEN** the preview shows the track title, the description "Listen on throw.it", and the static throw.it preview image
 
 ### Requirement: Graceful playback error for unsupported formats
 

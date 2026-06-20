@@ -14,6 +14,15 @@ The system SHALL allow unauthenticated users to upload audio files via the web U
 - **WHEN** an anonymous upload completes successfully
 - **THEN** the system provides a share link only; no management URL, library entry, or delete option is offered
 
+### Requirement: Anonymous track title from filename
+
+Anonymous uploads MUST NOT include a title input in the UI. The system MUST derive the display title from the uploaded filename (without extension), using the same default rule as signed-in uploads.
+
+#### Scenario: Anonymous title from filename
+
+- **WHEN** an unauthenticated user uploads `demo_mix.wav` via the anonymous path without a title field
+- **THEN** the track record stores "demo_mix" as the display title
+
 ### Requirement: Anonymous track TTL
 
 The system SHALL set a 10-minute time-to-live on every anonymous track from the moment of successful upload confirmation. After expiry, the track and its share URL MUST become inaccessible (404). The TTL MUST be clearly communicated to the uploader at upload time and on the share page.
