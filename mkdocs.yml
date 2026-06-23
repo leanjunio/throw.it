@@ -5,7 +5,10 @@ repo_url: https://github.com/leanjunio/throw.it
 edit_uri: edit/main/openspec/changes/music-link-sharing-platform/
 
 theme:
-  name: readthedocs
+  name: material
+  features:
+    - content.code.copy
+    - navigation.sections
 
 markdown_extensions:
   - pymdownx.superfences:
