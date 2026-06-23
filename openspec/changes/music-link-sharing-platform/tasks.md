@@ -14,6 +14,40 @@ Each task is **SMART**: specific scope, measurable criteria, achievable in one s
 
 ---
 
+## 0. Developer machine preflight
+
+Complete this section before section 1. Fix any failure here first; later tasks assume these checks already pass.
+
+- [ ] **0.1** Verify Node.js and pnpm
+  - **Done when:**
+    - `node -v` reports **v20.0.0 or higher**
+    - `pnpm -v` prints a version (install via `corepack enable` if missing)
+    - From the repo root, `pnpm --version` succeeds
+
+- [ ] **0.2** Verify Docker is installed and running
+  - **Done when:**
+    - `docker -v` succeeds
+    - `docker compose version` succeeds
+    - `docker info` runs without error (daemon is up)
+
+- [ ] **0.3** Verify required local ports are free
+  - **Done when:**
+    - Nothing is listening on **3000**, **5432**, **9000**, **9001**, **1025**, or **8025**
+    - Check each port, e.g. `lsof -nP -iTCP:3000 -sTCP:LISTEN` (macOS/Linux); empty output means the port is free
+    - If a port is in use, stop the conflicting process or change your local setup before continuing
+
+- [ ] **0.4** Verify Open Design prototypes are reachable
+  - **Done when:**
+    - Design root exists: `/Users/leanjunio/Documents/projects/open-design/.od/projects/c5e34f64-b0b3-40ad-a5ab-b55822522dbf`
+    - `index.html` is present under that path
+    - Opening `index.html` in a browser shows the route index with links to all page prototypes
+    - `css/shared.css` exists in the same project (design tokens for Tailwind mapping)
+
+- [ ] **0.5** Verify OpenSpec CLI (for apply workflow)
+  - **Done when:**
+    - `openspec --version` succeeds
+    - `openspec status --change music-link-sharing-platform --json` reports `"state": "ready"` and all planning artifacts `"status": "done"`
+
 ## 1. Local development environment
 
 - [ ] **1.1** Add `docker-compose.yml` with Postgres 16, MinIO, and Mailpit
