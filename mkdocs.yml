@@ -1,0 +1,33 @@
+site_name: throw.it
+docs_dir: openspec/changes/music-link-sharing-platform
+site_url: https://leanjunio.github.io/throw.it/
+repo_url: https://github.com/leanjunio/throw.it
+edit_uri: edit/main/openspec/changes/music-link-sharing-platform/
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - navigation.sections
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Overview:
+      - Proposal: proposal.md
+      - Design: design.md
+  - Architecture:
+      - Architecture: architecture.md
+      - Endpoint handlers: endpoint-handlers.md
+  - Capabilities:
+      - Anonymous upload: specs/anonymous-upload/spec.md
+      - Audio upload: specs/audio-upload/spec.md
+      - Shareable playback: specs/shareable-playback/spec.md
+      - Track management: specs/track-management/spec.md
+      - Uploader auth: specs/uploader-auth/spec.md
