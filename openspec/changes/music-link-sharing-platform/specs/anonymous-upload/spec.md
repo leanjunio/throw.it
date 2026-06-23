@@ -42,6 +42,15 @@ The system SHALL set a 10-minute time-to-live on every anonymous track from the 
 - **WHEN** an anonymous upload completes successfully
 - **THEN** the UI displays the share link with a clear message that the track will be deleted in 10 minutes
 
+### Requirement: Anonymous tracks support listen counts
+
+Anonymous tracks MUST use the same listen counting rules and public playback display as signed-in tracks. Listen counts for anonymous tracks MUST be visible on the playback page during the track's TTL. Anonymous uploaders have no library; they MAY check listen counts by visiting the share link before expiry.
+
+#### Scenario: Anonymous playback shows listen count
+
+- **WHEN** a listener opens an anonymous track share URL within its TTL and the track has 3 listens
+- **THEN** the playback page displays "3 listens" alongside the track metadata
+
 ### Requirement: Anonymous IP track limit
 
 The system SHALL allow a maximum of 3 active anonymous tracks per IP address at any time. A track is considered active from confirmation until TTL expiry and deletion. When an active anonymous track expires and is deleted, its slot MUST become available again for that IP.

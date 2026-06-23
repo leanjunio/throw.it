@@ -7,7 +7,7 @@ The system SHALL provide authenticated uploaders with a library page listing all
 #### Scenario: View library
 
 - **WHEN** an authenticated uploader navigates to their library
-- **THEN** the system displays a list of their tracks with title, duration, upload date, and share link
+- **THEN** the system displays a list of their tracks with title, duration, upload date, listen count, and share link
 
 #### Scenario: Empty library
 
@@ -83,3 +83,17 @@ The system SHALL display the uploader's current storage usage relative to the 5 
 
 - **WHEN** an authenticated uploader with 2.3 GB of tracks views their library
 - **THEN** the UI displays storage usage (e.g., "2.3 GB of 5 GB used")
+
+### Requirement: Listen count in library
+
+The system SHALL display each track's total listen count in the uploader library. The count MUST match the count shown on the public playback page for that track. The count MUST use correct pluralization in column headers and cell values where applicable.
+
+#### Scenario: Listen count shown in library table
+
+- **WHEN** an authenticated uploader views their library and a track has 12 listens
+- **THEN** the library table displays 12 in the Listens column for that track
+
+#### Scenario: Zero listens shown in library
+
+- **WHEN** an authenticated uploader views their library and a track has never been played
+- **THEN** the library table displays 0 in the Listens column for that track

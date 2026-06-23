@@ -24,6 +24,7 @@ Constraints:
 - Magic link auth for uploaders who want a library (24-hour sessions)
 - Simple library for managing signed-in uploads (rename, delete, copy link)
 - Fast playback page load with refresh-on-demand streaming
+- Per-track listen counts (public on playback page, visible in uploader library) without a full analytics dashboard
 - Rich link previews when URLs are shared in chat apps (Open Graph)
 - Graceful handling of unsupported browser formats (warnings at upload, errors at playback)
 
@@ -38,7 +39,7 @@ Constraints:
 - Team/organization accounts
 - Mobile native apps
 - Content moderation or copyright detection
-- Analytics dashboard for uploaders
+- Analytics dashboard for uploaders (listen count per track is in scope; time-series, geography, and per-listener breakdown are not)
 - Public API for third-party integrations
 - CDN (deferred until global latency or cost warrants it)
 
@@ -156,7 +157,48 @@ Constraints:
 
 **Rationale:** $0/month target for early public launch. No CDN for MVP. Single region is fine until global latency becomes a problem.
 
+### 13. Listen counting
+
+**Choice:** Single integer `listen_count` per track, incremented server-side via an unauthenticated `POST` from the playback player. Count on fresh play from the beginning only; do not count pause/resume or scrub-to-start mid-pass; count again after the track ends naturally and the listener starts a new pass. Treat `currentTime < 0.5` s as "at the beginning." Client tracks `listenCountedForPass` (reset on `ended` event). Display publicly on playback page and in signed-in library. Anonymous tracks use the same rules during their TTL. No rate limiting or per-listener deduplication in MVP.
+
+**Rationale:** Uploaders want lightweight feedback that a link was opened ("did my client listen?") without building an analytics product. Session-per-pass counting avoids inflating counts on pause/resume while still counting genuine replays after a full listen. Server-side persistence keeps counts visible across visitors; client-only counting would be meaningless for shared links.
+
+**Alternatives considered:**
+
+- Count every play button click — inflates on pause/resume
+- Position-only rule (count whenever `currentTime ≈ 0` at play) — counts scrub-back-to-start as new listens
+- Full analytics (unique listeners, geography, time series) — out of MVP scope
+- IP rate limiting per track — deferred; acceptable inflation risk at early scale
+
 ## Frontend & UI
+
+### UI design references
+
+**Source of truth for layout, copy, and visual styling during frontend implementation.** Open the prototypes in a browser from the project index.
+
+**Design root:** `/Users/leanjunio/Documents/projects/open-design/.od/projects/c5e34f64-b0b3-40ad-a5ab-b55822522dbf`
+
+| App route | Prototype file | States / variants (state switcher in prototype) |
+|-----------|----------------|---------------------------------------------------|
+| — (hub) | `index.html` | Links to all route prototypes |
+| `/` | `landing.html` | Single view (signed-out nav) |
+| `/upload` | `upload.html` | `interactive` (idle → uploading → success), `quota` (5 GB account cap error) |
+| `/upload/temp` | `upload-temp.html` | `interactive` (idle → uploading → success), `ip-tracks`, `ip-storage` |
+| `/sign-in` | `sign-in.html` | `email`, `check-email`, `expired` |
+| `/library` | `library.html` | `populated` (rename + delete dialogs), `empty` |
+| `/t/[slug]` | `playback.html` | `playing`, `anonymous`, `pluralization`, `loading`, `error`, `404`, `countable` |
+
+**Shared assets:**
+
+- `css/shared.css` — design tokens (colors, type scale, spacing), component patterns (nav, buttons, dropzone, player, dialogs, table). Map to Tailwind + shadcn during implementation.
+- `js/shared.js` — interaction reference only (theme dropdown, upload state machine, dialogs, copy-to-clipboard, player scrubber). Reimplement in React; do not ship this script.
+
+**How to use during implementation:**
+
+1. Open `index.html` in a browser; walk each route before building the matching Next.js page.
+2. Match structure, spacing, copy, and component hierarchy from the prototype; translate CSS variables to Tailwind `dark:` tokens.
+3. Use the state switcher at the bottom of multi-state prototypes to implement every variant listed above.
+4. When this design doc and a prototype disagree, **this design doc wins** for behavior and data rules; **the prototype wins** for layout and visual polish unless noted below.
 
 ### Visual direction
 
@@ -212,7 +254,7 @@ Single root `app/layout.tsx` wraps all pages — no route groups for MVP.
 
 ### Library UX
 
-**Layout:** Simple table — Title, Duration, Date, Actions.
+**Layout:** Simple table — Title, Duration, Date, Listens, Actions.
 
 **Share links:** Copy button only (URL hidden); Sonner toast confirms copy.
 
@@ -230,13 +272,13 @@ Already-signed-in users visiting `/sign-in` redirect to `/library`.
 
 ### Playback page
 
-**Metadata:** Title and duration only — no upload date.
+**Metadata:** Title, duration, and listen count (e.g., "12 listens") — no upload date.
 
 **Anonymous tracks:** Static expiry message at SSR (e.g. "This temporary track expires 10 minutes after upload" or relative text like "Uploaded 3 minutes ago · expires soon"). No live countdown timer.
 
 **404:** Single generic message — "Track not found" — for invalid, deleted, and expired slugs.
 
-**Player:** Custom UI (play/pause, seek scrubber, elapsed/total time). No volume control, no keyboard shortcuts for MVP. Spinner on play button while presigned stream URL loads.
+**Player:** Custom UI (play/pause, seek scrubber, elapsed/total time). No volume control, no keyboard shortcuts for MVP. Spinner on play button while presigned stream URL loads. On countable play (fresh start from beginning, not yet counted this pass), fire-and-forget `POST` to increment listen count; track `listenCountedForPass` client-side, reset on `ended`.
 
 **Mobile scrubber:** Same component; taller touch target via CSS padding.
 
@@ -259,6 +301,17 @@ Already-signed-in users visiting `/sign-in` redirect to `/library`.
 **Accessibility (MVP baseline):** Semantic HTML, visible focus states, dialog focus traps (shadcn), `aria-label` on icon-only buttons, sufficient color contrast in both themes.
 
 **Responsive:** Mobile-first; all pages usable on phone.
+
+## Prototype alignment notes
+
+The Open Design prototypes (see **UI design references** above) supersede the earlier single-file wireframe review. They include all required states from that review: upload quota/limit errors, OGG format warning, playback loading/error/404, sign-in expired link, listen-count pluralization, theme dropdown, and destructive delete styling.
+
+**Implementation reminders not visible in static HTML:**
+
+- Listen increment: prefer optimistic UI update on countable play; server is source of truth on refresh (`playback.html` → `countable` state documents client rules).
+- Playback titles: use display title (filename without extension), not raw filename with extension.
+- Mobile library: prototype uses icon-only row actions; keep that pattern on narrow viewports.
+- Anonymous success: optional note "Open Preview to see listen count" (no library for temp uploaders).
 
 ## Risks / Trade-offs
 

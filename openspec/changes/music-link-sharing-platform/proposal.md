@@ -9,9 +9,11 @@ Musicians, producers, sound engineers, and other audio professionals routinely n
   - **Anonymous uploaders** get temporary hosting (10-minute TTL) with clear expiry messaging—no account, no management, fire-and-forget
 - Serve a public playback page at each URL so anyone with the link can stream the track in-browser
 - Support common professional audio formats (MP3, WAV, FLAC, AAC, OGG) with format warnings and graceful playback errors (no transcoding in MVP)
-- Give signed-in uploaders a library to view, copy links for, rename, and delete their tracks (5 GB total storage cap per account)
+- Give signed-in uploaders a library to view, copy links for, rename, delete, and see listen counts for their tracks (5 GB total storage cap per account)
 - Provide magic link authentication for uploaders who want persistent storage (24-hour sessions, multi-device)
-- Add track metadata display on the playback page (title, duration, upload date)
+- Add track metadata display on the playback page (title, duration) and a public listen count
+- Track listen counts per audio file (fresh play from start; no count on pause/resume or scrub-to-start mid-pass; count again after track ends naturally)
+- Show listen counts to uploaders in the library and publicly on playback pages (signed-in and anonymous tracks)
 - Enforce anonymous abuse limits (3 active tracks per IP, 100 MB combined per IP, one upload at a time)
 
 ## Capabilities
