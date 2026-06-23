@@ -1,6 +1,6 @@
 # throw.it — technical architecture
 
-Architect-facing overview of how the MVP works at runtime. For product scope, UX, and decision rationale, see `proposal.md` and `design.md`. For behavioral requirements, see `specs/`.
+Architect-facing overview of how the MVP works at runtime. For product scope, UX, and decision rationale, see `proposal.md` and `design.md`. For behavioral requirements, see `specs/`. For per-route handler steps, see `endpoint-handlers.md`.
 
 ---
 
@@ -149,7 +149,7 @@ erDiagram
 
 ## 5. API surface
 
-All routes are internal to the application. Authentication uses an HTTP-only session cookie resolved server-side.
+All routes are internal to the application. Authentication uses an HTTP-only session cookie resolved server-side. For per-route handler steps, validation order, and error paths, see `endpoint-handlers.md`.
 
 | Method | Route | Auth | Purpose |
 |--------|-------|------|---------|
@@ -162,8 +162,7 @@ All routes are internal to the application. Authentication uses an HTTP-only ses
 | `POST` | `/api/tracks/[slug]/listen` | — | Increment `listen_count` |
 | `PATCH` | `/api/tracks/[id]` | Session | Rename track (ownership check) |
 | `DELETE` | `/api/tracks/[id]` | Session | Soft-delete track, remove R2 object, retire slug |
-
-Sign-out is a route handler that deletes the session row and clears the cookie.
+| `POST` | `/api/auth/sign-out` | Session | Delete session row, clear cookie, redirect to `/` |
 
 ### Quota enforcement (upload initiation)
 
