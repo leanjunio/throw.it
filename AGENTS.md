@@ -43,6 +43,7 @@ Current nav sections:
 | Home | `index.md` |
 | Overview | `proposal.md`, `design.md` |
 | Architecture | `architecture.md`, `endpoint-handlers.md` |
+| Architecture gaps | `architecture-gaps/*.md` (five pages) |
 | Capabilities | `specs/*/spec.md` (five capability specs) |
 
 ## 4. Files that are NOT published

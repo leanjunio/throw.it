@@ -2,6 +2,8 @@
 
 Architect-facing overview of how the MVP works at runtime. For product scope, UX, and decision rationale, see `proposal.md` and `design.md`. For behavioral requirements, see `specs/`. For per-route handler steps, see `endpoint-handlers.md`.
 
+For known ambiguities, doc conflicts, and schema gaps, see [Architecture gaps](architecture-gaps/ARCHITECTURE-GAPS.md).
+
 ---
 
 ## 1. Purpose

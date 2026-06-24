@@ -22,7 +22,19 @@ Start with **why and what**, then **how it is built**, then **capability specs**
 | [Architecture](architecture.md) | System context, data model, routes, and cross-cutting flows |
 | [Endpoint handlers](endpoint-handlers.md) | Per-route handler steps, validation order, and error paths |
 
-### 3. Capabilities
+### 3. Architecture gaps
+
+Solution-architect review of ambiguities, doc conflicts, and open decisions. Read this before sprint planning or when specs and handlers disagree.
+
+| Document | What you'll find |
+|----------|------------------|
+| [Architecture gaps overview](architecture-gaps/ARCHITECTURE-GAPS.md) | Highest-impact blockers, doc hierarchy, and suggested next steps |
+| [Implementation blockers](architecture-gaps/01-implementation-blockers.md) | Schema holes and missing fields that break stated behavior |
+| [Doc conflicts](architecture-gaps/02-doc-conflicts.md) | Where documents disagree |
+| [Open questions](architecture-gaps/03-open-questions.md) | Decisions still needed, grouped by topic |
+| [Operational gaps](architecture-gaps/04-operational-gaps.md) | Security, scaling, reliability, and ops |
+
+### 4. Capabilities
 
 Each capability has a spec with requirements and scenarios. Read these when you need precise, testable behavior.
 
@@ -42,3 +54,14 @@ Each capability has a spec with requirements and scenarios. Read these when you 
 - **MVP stack:** Next.js, PostgreSQL, S3-compatible object storage (R2 in production), magic link auth for uploaders.
 
 For the full picture, begin with the [Proposal](proposal.md).
+
+## Source of truth
+
+When documents disagree, reconcile before coding. Do not silently pick the most detailed doc.
+
+1. **Capability specs** (`specs/*/spec.md`) — testable behavior and acceptance criteria
+2. **`endpoint-handlers.md`** — API routes and handler steps (after specs are updated)
+3. **`design.md`** — product UX and architectural decisions
+4. **`tasks.md`** — implementation checklist (internal; may drift from specs)
+
+See [Architecture gaps](architecture-gaps/ARCHITECTURE-GAPS.md) for known conflicts and open decisions.

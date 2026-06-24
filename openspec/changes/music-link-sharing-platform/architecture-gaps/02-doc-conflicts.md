@@ -136,10 +136,6 @@ Nothing prevents same person (signed in) from also starting an anonymous upload 
 
 ## Doc precedence (meta)
 
-No document defines which source wins when specs and handlers conflict. See [ARCHITECTURE-GAPS.md](../ARCHITECTURE-GAPS.md) for a practical reading order.
+No document defines which source wins when specs and handlers conflict. See [ARCHITECTURE-GAPS.md](ARCHITECTURE-GAPS.md) for a practical reading order.
 
-**Recommendation:** Add a short "Source of truth" note to `index.md`:
-
-- Behavior acceptance → capability specs
-- API implementation → `endpoint-handlers.md` after specs are updated
-- UX layout → prototypes, then `design.md`
+**Recommendation:** The [home page](../index.md#source-of-truth) now includes a source-of-truth hierarchy. Update capability specs first when resolving conflicts, then `endpoint-handlers.md`.

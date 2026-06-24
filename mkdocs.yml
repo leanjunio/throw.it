@@ -25,6 +25,12 @@ nav:
   - Architecture:
       - Architecture: architecture.md
       - Endpoint handlers: endpoint-handlers.md
+  - Architecture gaps:
+      - Overview: architecture-gaps/ARCHITECTURE-GAPS.md
+      - Implementation blockers: architecture-gaps/01-implementation-blockers.md
+      - Doc conflicts: architecture-gaps/02-doc-conflicts.md
+      - Open questions: architecture-gaps/03-open-questions.md
+      - Operational gaps: architecture-gaps/04-operational-gaps.md
   - Capabilities:
       - Anonymous upload: specs/anonymous-upload/spec.md
       - Audio upload: specs/audio-upload/spec.md

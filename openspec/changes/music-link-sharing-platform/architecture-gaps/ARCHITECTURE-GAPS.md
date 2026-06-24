@@ -39,14 +39,14 @@ Architects usually sort gaps into three buckets:
 2. **Conflicts** — Two docs say different things; pick one before coding.
 3. **Missing NFRs** — Security, cron schedules, observability. Often deferred at MVP, but you should know they are undefined.
 
-Detail lives in sibling files under `architecture-gaps/`:
+Detail lives in sibling pages in this section:
 
 | File | Contents |
 |------|----------|
-| [01-implementation-blockers.md](architecture-gaps/01-implementation-blockers.md) | Schema holes and missing fields that break stated behavior |
-| [02-doc-conflicts.md](architecture-gaps/02-doc-conflicts.md) | Where documents disagree |
-| [03-open-questions.md](architecture-gaps/03-open-questions.md) | Decisions still needed, grouped by topic |
-| [04-operational-gaps.md](architecture-gaps/04-operational-gaps.md) | Security, scaling, reliability, ops |
+| [01-implementation-blockers.md](01-implementation-blockers.md) | Schema holes and missing fields that break stated behavior |
+| [02-doc-conflicts.md](02-doc-conflicts.md) | Where documents disagree |
+| [03-open-questions.md](03-open-questions.md) | Decisions still needed, grouped by topic |
+| [04-operational-gaps.md](04-operational-gaps.md) | Security, scaling, reliability, ops |
 
 ---
 
@@ -158,4 +158,4 @@ If you want to tighten the docs before building:
 3. Pick numeric defaults (presigned TTL, sweeper delay, cron cadence) and put them in one "constants" section in `design.md`.
 4. Either commit UI prototypes to the repo or publish them somewhere the team can reach.
 
-See the detail files under `architecture-gaps/` for the full list of conflicts, open questions, and operational gaps.
+See the sibling pages in this section for the full list of conflicts, open questions, and operational gaps.
